@@ -1,0 +1,19 @@
+html                    { overflow-y:scroll}
+body                    { padding-top:50px; padding-right: 0 !important;}
+#todo-list              { margin-bottom:30px; }
+.btn-margin-left        { margin-left:5px; }
+
+
+.modal-open, .modal-open .navbar-fixed-top {
+    margin-right: auto !important;
+}
+
+.table-hover > tbody > tr:hover > td,
+.table-hover > tbody > tr:hover > th {
+    background-color: #dddddd;
+    color: #ffffff;
+}
+
+.clickable {
+    cursor: pointer;
+}

@@ -1,0 +1,1 @@
+angular.module('ghsUser', ['userController', 'userService']);

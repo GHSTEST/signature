@@ -1,0 +1,1 @@
+angular.module('ghsCampain', ['campainController', 'campainService']);

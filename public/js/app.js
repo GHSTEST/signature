@@ -1,0 +1,1 @@
+angular.module('ghsApp', ['ngRoute', 'appRoutes', 'MainController', 'UserController', 'UserService', 'ClientController', 'ClientService', 'CampainController', 'CampainService']);
