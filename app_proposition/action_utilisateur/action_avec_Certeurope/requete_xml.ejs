@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<REQUEST>
+	<TYPE><%= param.type %></TYPE>
+	<APPLICATION_CODE><%= param.code_appli %></APPLICATION_CODE>
+        <IDENTIFIANT><%= param.id_requete %></IDENTIFIANT>
+	<REQUESTER_IDENTIFICATION>
+		<NAME><%= param.signataire.nom %></NAME>
+		<FIRSTNAME><%= param.signataire.prenom %></FIRSTNAME>
+		<EMAIL><%= param.signataire.mail%></EMAIL>
+	</REQUESTER_IDENTIFICATION>
+	<DOCUMENTS>
+		<DOCUMENT>
+			<TYPE><%= param.doc.a_signer %></TYPE>
+			<PARAM_SIGNATURE_PDF>
+				<SIGNATURE_PDF_PAGE><%= param.signature.page %></SIGNATURE_PDF_PAGE>
+				<SIGNATURE_PDF_IMAGE><%= param.signature.type_image %></SIGNATURE_PDF_IMAGE>
+				<SIGNATURE_PDF_LOGO_LLX><%= param.signature.x_coin_bas_gauche %></SIGNATURE_PDF_LOGO_LLX>
+				<SIGNATURE_PDF_LOGO_LLY><%= param.signature.y_coin_bas_gauche %></SIGNATURE_PDF_LOGO_LLY>
+				<SIGNATURE_PDF_LOGO_URX><%= param.signature.x_coin_haut_droit %></SIGNATURE_PDF_LOGO_URX>
+				<SIGNATURE_PDF_LOGO_URY><%= param.signature.y_coin_haut_droit %></SIGNATURE_PDF_LOGO_URY>
+			</PARAM_SIGNATURE_PDF>
+			<SIGNATURE><%=param.signature.type_image%></SIGNATURE>
+			<NAME><%=param.doc.nom_du_doc%></NAME>
+			<HASH><%=param.doc.hash%></HASH>
+			<ALGO><%=param.doc.algo%></ALGO>
+			<WITHDRAWAL></WITHDRAWAL>
+			<DEPOSIT></DEPOSIT>
+		</DOCUMENT>
+	</DOCUMENTS>
+</REQUEST>

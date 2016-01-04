@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+	xmlns:web="http://certisms.certeurope.fr/">
+	<soapenv:Header />
+	<soapenv:Body>
+		<web:CheckAcces>
+			<codeApplication> <%= param.code_appli %> </codeApplication>
+			<identifiant><%= param.signataire.num %></identifiant>
+			<code><%= ??? param.code_appli ??? %></code>
+		</web:CheckAcces>
+	</soapenv:Body>
+</soapenv:Envelope>
