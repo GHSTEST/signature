@@ -1,35 +1,43 @@
 var mongoose = require('mongoose');
-var campagne = require('./models/campain.js')
+var Campagne = require('./models/campain.js')
 var emplacements = require('noms_globaux')
 var certiclic = require('./action_avec_Certeurope/certiclic.js')
 var certisms = require('./action_avec_Certeurope/certisms.js')
 
-
-function utilisateur(){
-}
-
+/*
 utilisateur.prototype.qui_suis_je = function(JSON_demande){
 	this.moi = campagne.findOne(JSON_demande);
+}*/
+
+Campagne.prototype.obtenir_sms = function(){
+	var le_signataire = new certiclic.Signataire(this.nom, this.prenom, this.tel);
+	var sms = new certisms.Service_certisms(textOk, le_signataire);
+	_this = this
+	sms.on('succes', function(){
+		_this.autorisation.valider_code_sms = Date.now();
+		_this.save();
+	})
+	sms.envoyer_demande_soap(emplacements.addAccess);
 }
 
-utilisateur.prototype.obtenir_sms = function(){
-	var sms = new service_certisms(textOk, this.moi);
-	console.log("je suis la")
-	var reponse = sms.envoyer_demande_soap(emplacements.addAccess);
-	return reponse
-}
-
-utilisateur.prototype.valider_code = function(code){
-	this.code = code;
-	var sms = new certisms.service_certisms(textOk, this.moi);
+Campagne.prototype.valider_code = function(code){
+	var le_signataire = new certiclic.Signataire(this.nom, this.prenom, this.tel);
+	var sms = new certisms.service_certisms(textOk, this.moi, code);
+	sms.on('succes', function(){
+		_this.autorisation.signer_la_campagne = Date.now();
+		_this.save();
+	})
 	sms.envoyer_demande_soap(emplacements.checkAccess);
 }
 
-utilisateur.prototype.faire_signer = function(une_signature, doc_a_signer){
+Campagne.prototype.faire_signer = function(une_signature){
+	var le_doc_a_signer = new certiclic.Doc(this.nom_contrat, this.contrat);
+	var le_signataire = new certiclic.Signataire(this.nom, this.prenom, this.mail);
 	var on_veut_signer = 1;
-	var clic = new certiclic.service_certiclic(on_veut_signer, this.moi.id, this.moi, une_signature, doc_a_signer);
+	var clic = new certiclic.Service_certiclic(on_veut_signer, this.idCampain, le_signataire, une_signature, le_doc_a_signer);
+	clic.on('succes', function(){
+	})
 	clic.envoyer_la_demande();
-	
 }
 
 var u1 = new utilisateur();

@@ -2,30 +2,34 @@ var fs = require('fs');
 var ejs = require('ejs');
 var http = require('http');
 var crypt = require('crypto');
+var events = require('events');
 var FormData = require('form-data');
 var emplacements = require('noms_globaux');
-var parametres = require('parametres')
+var parametres = require(emplacements.parametres);
 
-function signataire(nom, prenom, tel){
+
+function Signataire(nom, prenom, tel){
 	this.nom = nom;
 	this.prenom = prenom;
 	this.tel = tel;
 }
 
-function service_certisms(textOk,  un_signataire){
+function Service_certisms(textOk,  un_signataire, code_sms){
 	this.code_appli = parametres.code_appli; //code propre a GHS pour acceder au service certisms
 	this.textOk = textOk; //?? texte affichee lors de l'envoi du sms ??
-	this.signataire = un_signataire;	//donnees du signataire
-}
+	this.signataire = un_signataire; //donnees du signataire
+	this.code_sms = code_sms || "rien";
+	}
 
+Service_certisms.prototype = new events.EventEmitter()
 
-service_certisms.prototype.ecrire_requete_soap = function(quelle_requete){
+Service_certisms.prototype.ecrire_requete_soap = function(quelle_requete){
 	var xml_a_interpreter = fs.readFileSync(quelle_requete, 'utf8') 
 	var xml = ejs.render(xml_a_interpreter, {'param': this});
 	return xml
 }
 
-service_certisms.prototype.envoyer_demande_soap = function(quelle_requete){
+Service_certisms.prototype.envoyer_demande_soap = function(quelle_requete){
 	var requete_soap = this.ecrire_requete_soap(quelle_requete);
 	var options_http = {
 		hostname: 'certisms.certeurope.fr',
@@ -42,12 +46,13 @@ service_certisms.prototype.envoyer_demande_soap = function(quelle_requete){
 	var req = http.request(options_http, this.masque_recevoir_la_reponse(_this));
 	req.write(requete_soap);
 	req.end();
+	this.emit('envoye')
 }
 
 emplacements.ajouter_fichier_local('addAccess',__dirname, 'requete_soap_addAccess.ejs');
 emplacements.ajouter_fichier_local('checkAccess',__dirname, 'requete_soap_checkAccess.ejs');
 
-service_certisms.prototype.masque_recevoir_la_reponse = function(_this){
+Service_certisms.prototype.masque_recevoir_la_reponse = function(_this){
 	var recevoir_la_reponse = function(res){
 		console.log('STATUS: ' + res.statusCode);
 		console.log('HEADERS: ' + JSON.stringify(res.headers));
@@ -59,7 +64,7 @@ service_certisms.prototype.masque_recevoir_la_reponse = function(_this){
 	return recevoir_la_reponse
 }
 
-service_certisms.prototype.gestion_des_reponses = function(reponse){
+Service_certisms.prototype.gestion_des_reponses = function(reponse){
 	console.log(reponse);
 	var corps_rep = reponse.substr(reponse.indexOf("SOAP-ENV:Body"));
 	var quelle_requete = corps_rep.substring((corps_rep.indexOf("<ns1")+5), corps_rep.indexOf("Response"));
@@ -68,12 +73,18 @@ service_certisms.prototype.gestion_des_reponses = function(reponse){
 	console.log(quelle_requete);	
 	console.log(quelle_erreur);
 	console.log(message_erreur);
+	if (message_erreur == "OK"){
+		this.emit('succes');
+	}
+	else{ this.emit('pb');}
+	this.emit('traitement_termine', quelle_requete, quelle_erreur, message_erreur)
 }
 
+if (require.main === module){
 var p1 = new signataire('nom', 'prenom', '0177777777');
 var a = new service_certisms('salut', p1);
-console.log("===....====")
-console.log(emplacements.addAccess)
 a.envoyer_demande_soap(emplacements.addAccess);
+}
 
-module.exports.service_certisms = service_certisms;
+module.exports.Signataire = Signataire;
+module.exports.Service_certisms = Service_certisms;

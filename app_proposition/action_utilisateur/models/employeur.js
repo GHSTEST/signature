@@ -1,8 +1,13 @@
 var mongoose = require('mongoose');
-var campainSchema = require('campain.js')
 
 var employeurSchema = mongoose.Schema({
         nom : String,
-		campagne_en_cours : [id_campain : String],
+		campagnes_en_cours : [Number],
+		autorisation : {
+							valider_code_sms : {type : Date, default : new Date(1901,01,01)},
+							ajouter_une_campagne : {type : Date, default : new Date(1901,01,01)}
+						},
         compteur_signature : Number
 });
+
+module.exports = mongoose.model('employeur', employeurSchema);

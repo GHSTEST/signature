@@ -14,6 +14,7 @@
     "ejs": "^2.3.4",
     "express": "^4.13.3",
     "express-session": "^1.12.1",
+	"form-data" : "latest",
     "grunt": "latest",
     "grunt-contrib-cssmin": "latest",
     "grunt-contrib-jshint": "latest",

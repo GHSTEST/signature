@@ -3,10 +3,13 @@
 	xmlns:web="http://certisms.certeurope.fr/">
 	<soapenv:Header />
 	<soapenv:Body>
-		<web:CheckAcces>
+		<web:AddAcces>
 			<codeApplication> <%= param.code_appli %> </codeApplication>
-			<identifiant><%= param.signataire.num %></identifiant>
-			<code><%=  param.code_sms %></code>
-		</web:CheckAcces>
+			<identifiant><%= param.signataire.tel %></identifiant>
+			<url>http://10.10.1.20/VerificationHorodatage/trunk/build/verificationHorodatage.php</url>
+			<parametres>
+			</parametres>
+			<textOk><%= param.textOk%></textOk>
+		</web:AddAcces>
 	</soapenv:Body>
 </soapenv:Envelope>
