@@ -13,16 +13,16 @@ var Employeur = require(emplacements.employeur);
 var Campagne = require(emplacements.campain)
 var certiclic = require(emplacements.certiclic)
 var certisms = require(emplacements.certisms)
-
+var nimportequoi = new riendutout();
 
 Employeur.prototype.obtenir_sms = function(){
 	var sms = new certisms.Service_certisms(textOk, this);
 	_this = this
 	sms.on('succes', function(){
-		_this.autorasition.valider_code_sms = Date.now();
+		_this.autorisation.valider_code_sms = Date.now();
 		_this.save();
 	} );
-	sms.envoyer_demande_soap(emplacements.addAccess);
+	sms.envoyer_demande_soap("addAccess");
 }
 
 Employeur.prototype.valider_code = function(code){
@@ -32,7 +32,7 @@ Employeur.prototype.valider_code = function(code){
 		_this.autorisation.ajouter_une_campagne = Date.now();
 		_this.save();
 	})
-	sms.envoyer_demande_soap(emplacements.checkAccess);
+	sms.envoyer_demande_soap("checkAccess");
 }
 
 Employeur.prototype.ajouter_une_campagne = function(doc, signataire){
@@ -47,9 +47,9 @@ Employeur.prototype.ajouter_une_campagne = function(doc, signataire){
 
 
 Employeur.prototype.faire_signer = function(une_signature, doc_a_signer){
-	var on_veut_signer = 1;
-	var clic = new certiclic.Service_certiclic(on_veut_signer, this.moi.id, this.moi, une_signature, doc_a_signer);
-	clic.envoyer_la_demande();
+	var embaucheur = new certiserveur.Embaucheur(this.idClientCerteurope);
+	var certiserveur = new certiserveur.Service_certiserveur(embaucheur, doc_a_signer, une_signature);
+	certiserveur.envoyer_la_demande();
 }
 
 Employeur.create({nom: 'entreprise1', compteur_signature:0}, function(err, empl){

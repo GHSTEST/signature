@@ -3,13 +3,32 @@
 	xmlns:web="http://certisms.certeurope.fr/">
 	<soapenv:Header />
 	<soapenv:Body>
-		<web:AddAcces>
-			<codeApplication> <%= param.code_appli %> </codeApplication>
-			<identifiant><%= param.signataire.tel %></identifiant>
-			<url>http://10.10.1.20/VerificationHorodatage/trunk/build/verificationHorodatage.php</url>
-			<parametres>
-			</parametres>
-			<textOk><%= param.textOk%></textOk>
-		</web:AddAcces>
+		<web:pdfSignRequest>
+			<allocateTimeStampContainer> true    </allocateTimeStampContainer>
+			<certifLevel>  CERTIFIED_NO_CHANGES_ALLOWED   </certifLevel>
+			<claimedIdentityr>
+					<name > <%= param.embaucheur.idClientCerteurope %>     </name >
+			</claimedIdentity>
+			<inputDocument>
+					<Data >  <%= param.doc.fichier_pdf %>     </Data >
+					<digestAlgdId >   <%= param.doc.algo %> 	</digestAlgdId >
+					<digestValue >   <%= param.doc.hash %>  	</digestValue >
+					<requestAttachmentType >  inline  				</requestAttachmentType >
+					<Uri >  quefautilici...   								</Uri >
+			</inputDocument>
+			<Profile >  <% le profile est fourni par Certeurope...  %>   </Profile >
+			<signatureAppearanceDTO>
+					<fontSize>   12  			</fontSize>
+					<fontStyle>   0  			</fontStyle>
+					<runDirection>   0  	</runDirection>
+					<sigRenderMode>   <%= param.signature.type_image %>  	</sigRenderMode>
+					<pageNbr> <%= param.signature.page %>	</pageNbr>
+					<x1 >  <%= param.signature.x_coin_bas_gauche %>  </x1 >
+					<y1 >  <%= param.signature.y_coin_bas_gauche %>  </y1 >
+					<x2 >  <%= param.signature.x_coin_haut_droit %>  </x2 >
+					<y2 >  <%= param.signature.y_coin_haut_droit %>  </y2 >
+			</signatureAppearanceDTO>
+			<Visible>  true   </Visible>
+		</web:pdfSignRequest>
 	</soapenv:Body>
 </soapenv:Envelope>

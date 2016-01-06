@@ -4,7 +4,7 @@ var http = require('http');
 var crypt = require('crypto');
 var mongodb = require('mongoose');
 var emplacements = require('noms_globaux');
-var FormData = require('form-data'); 
+var FormData = require('form-data');
 var events = require('events')
 var parametres = require(emplacements.parametres)
 
@@ -51,20 +51,21 @@ function Service_certiclic(type, id_requete, un_signataire,  une_signature, un_d
 	this.id_requete = id_requete; // code unique de la requete
 	this.signataire = un_signataire; //donnees du signataire
 	this.signature = une_signature;// parametres de signature
-	this.doc = un_doc; //parametres du doc a signer
+	this.doc = un_doc; //parametres du doc a signer...
+	this.doc.hashage();//...hashage du doc
+	this.xml_a_interpreter = fs.readFileSync(__dirname + '/requete_xml.ejs', 'utf8'); //patron de la requete xml
 }
 
 Service_certiclic.prototype = new  events.EventEmitter();
 
 Service_certiclic.prototype.ecrire_xml = function(){
-	var xml_a_interpreter = fs.readFileSync(__dirname + '/requete_xml.ejs', 'utf8') 
-	var xml = ejs.render(xml_a_interpreter, {'param': this});
+	var xml = ejs.render(this.xml_a_interpreter, {'param': this});
 	return xml
 }
 
 Service_certiclic.prototype.envoyer_la_demande = function(){
 	var formulaire = new FormData();
-	formulaire.append('fichier', fs.createReadStream(this.doc.nom_du_doc)); 
+	formulaire.append('fichier', fs.createReadStream(this.doc.nom_du_doc));
 	formulaire.append('xmlReq', this.ecrire_xml());
 	var _this = this;
 	formulaire.submit('https://cs1-qualif.certeurope.fr/SignatureCOC.do', this.masque_recevoir_la_reponse(_this)) ;
@@ -84,12 +85,12 @@ Service_certiclic.prototype.masque_recevoir_la_reponse = function(_this){
 			var fichier_signe = fs.createWriteStream("test.pdf");
 			res.pipe(fichier_signe);
 			this.emit('succes');
-				}	
+				}
 			}
 		res.on('end', function() {
 			console.log("traitement termine");
 			this.emit('traitement_termine');
-			})	
+			})
 	}
 	return recevoir_la_reponse
 }
@@ -107,4 +108,3 @@ module.exports.Doc = Doc;
 module.exports.Signature = Signature;
 module.exports.Signataire = Signataire;
 module.exports.Service_certiclic = Service_certiclic;
-

@@ -17,7 +17,7 @@ Campagne.prototype.obtenir_sms = function(){
 		_this.autorisation.valider_code_sms = Date.now();
 		_this.save();
 	})
-	sms.envoyer_demande_soap(emplacements.addAccess);
+	sms.envoyer_demande_soap("addAccess");
 }
 
 Campagne.prototype.valider_code = function(code){
@@ -27,7 +27,7 @@ Campagne.prototype.valider_code = function(code){
 		_this.autorisation.signer_la_campagne = Date.now();
 		_this.save();
 	})
-	sms.envoyer_demande_soap(emplacements.checkAccess);
+	sms.envoyer_demande_soap("checkAccess");
 }
 
 Campagne.prototype.faire_signer = function(une_signature){
@@ -40,5 +40,5 @@ Campagne.prototype.faire_signer = function(une_signature){
 	clic.envoyer_la_demande();
 }
 
-var u1 = new utilisateur();
+var u1 = new Campagne();
 u1.obtenir_sms

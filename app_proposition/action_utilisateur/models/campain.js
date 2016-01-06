@@ -4,23 +4,27 @@ var emplacements = require('noms_globaux.js')
 var Log = require(emplacements.log)
 
 var autorisationSchema = mongoose.Schema({
-		
-	
+
+
 })
 // define the schema for our campain model
 var campainSchema = mongoose.Schema({
-	    campainID : {type : String, index : true},
-        nom : {type : String, required : true},
+	  campainID : {type : Number, index : true},
+    nom : {type : String, required : true},
 		prenom : String,
 		mail   : {type : String, required : true},
 		tel : {type : String, required : true},
-        token : String,
+    token : String,
 		autorisation : {
 						valider_code_sms : {type : Date, default : new Date(1901,01,01)},
 						signer_la_campagne : {type : Date, default : new Date(1901,01,01)}
-						},
-        created_At : {type : Date, default: Date.now},
-        modified : {type : Date, default: Date.now},
+			},
+		signe_par : {
+						employeur : {type : Boolean, default : false},
+						salarie : 	{type : Boolean, default : false}
+		}
+    created_At : {type : Date, default: Date.now},
+    modified : {type : Date, default: Date.now},
 		contrat : Buffer
 });
 
@@ -29,7 +33,7 @@ campainSchema.statics.obtenir_dernier_id = function(){
 	if (typeof(this.max_id) == "number"){
 		this.max_id +=1;
 		max_id = this.max_id;
-		Log.update({variable : 'max_idCampain'},{$set { valeur : max_id }}).exec();
+		Log.update({variable : 'max_idCampain'},{$set : { valeur : max_id }}).exec();
 		}
 	else {
 		Log.create({variable : 'max_idCampain', value : 0, automate : true})
@@ -39,7 +43,7 @@ campainSchema.statics.obtenir_dernier_id = function(){
 
 campainSchema.statics.retablir_dernier_id = function(){
 	Log.findOne({variable : 'max_idCampain'})
-	
+
 }
 
 
