@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Campagne = require('./models/campain.js')
 var emplacements = require('noms_globaux')
+var events = require('events')
 var certiclic = require('./action_avec_Certeurope/certiclic.js')
 var certisms = require('./action_avec_Certeurope/certisms.js')
 
@@ -39,6 +40,8 @@ Campagne.prototype.faire_signer = function(une_signature){
 	})
 	clic.envoyer_la_demande();
 }
-
-var u1 = new Campagne();
-u1.obtenir_sms
+ if (require.main === module){
+var c1 = new Campagne();
+var clic = new certisms.Service_certisms();
+console.log((c1.constructor ===  Campagne))
+}

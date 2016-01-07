@@ -1,6 +1,7 @@
 var emplacements = require('noms_globaux')
 var mongoose = require('mongoose');
 
+ if (require.main === module){
 mongoose.connect('mongodb://localhost:27017/test');
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, '^^ connection error:'));
@@ -8,12 +9,13 @@ db.once('open', function() {
 	console.log("debut")
   // we're connected!
 });
+}
 
 var Employeur = require(emplacements.employeur);
 var Campagne = require(emplacements.campain)
 var certiclic = require(emplacements.certiclic)
 var certisms = require(emplacements.certisms)
-var nimportequoi = new riendutout();
+
 
 Employeur.prototype.obtenir_sms = function(){
 	var sms = new certisms.Service_certisms(textOk, this);
@@ -49,9 +51,8 @@ Employeur.prototype.ajouter_une_campagne = function(doc, signataire){
 Employeur.prototype.faire_signer = function(une_signature, doc_a_signer){
 	var embaucheur = new certiserveur.Embaucheur(this.idClientCerteurope);
 	var certiserveur = new certiserveur.Service_certiserveur(embaucheur, doc_a_signer, une_signature);
+	certiserveur.on('succes', function(){
+		//ici, ce qu'il advient du modele une fois signature bi partie faite...
+	})
 	certiserveur.envoyer_la_demande();
 }
-
-Employeur.create({nom: 'entreprise1', compteur_signature:0}, function(err, empl){
-	 empl.ajouter_doc_a_signer('euh...', 'euh...');
-});

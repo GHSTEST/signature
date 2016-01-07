@@ -22,7 +22,7 @@ var campainSchema = mongoose.Schema({
 		signe_par : {
 						employeur : {type : Boolean, default : false},
 						salarie : 	{type : Boolean, default : false}
-		}
+		},
     created_At : {type : Date, default: Date.now},
     modified : {type : Date, default: Date.now},
 		contrat : Buffer

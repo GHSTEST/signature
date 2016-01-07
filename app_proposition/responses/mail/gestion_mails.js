@@ -3,23 +3,19 @@ var nodemailer = require('nodemailer');
 function Envoyeur_mail(){};
 
 var smtpConfig = {
-  host: 'localhost',
-  port: 465,
-  secure: true, // use SSL
-  auth: {
-        user: 'user@gmail.com',
-        pass: 'pass'
-    }
+  host: 'smtp.ghs.fr',
+  port: 25,
+  secure: false // use ssl
 }
 
 Envoyeur_mail.prototype.transporter = nodemailer.createTransport(smtpConfig);
 
 Envoyeur_mail.prototype.envoyer_mail = function(destinataire){
   var mailOptions = {
-          from: 'bonjour',
+          from: 'bonjour@ghs.fr',
           to: destinataire,
           subject: "Signe ton contrat!",
-          text: "Salut, tu peux signer"
+          text: "Salut, tu peux signer",
           html: '<b>' + "version html du mail" + '</b>'
   };
  this.transporter.sendMail(mailOptions, function(error, info){
@@ -28,3 +24,8 @@ Envoyeur_mail.prototype.envoyer_mail = function(destinataire){
       }
       console.log('Message sent: ' + info.response);
  });
+}
+ if (require.main === module){
+   var a = new Envoyeur_mail();
+   a.envoyer_mail("loic@ghs.fr");
+ }
