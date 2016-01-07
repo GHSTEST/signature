@@ -3,6 +3,7 @@ var ejs = require('ejs');
 var http = require('http');
 var crypt = require('crypto');
 var events = require('events');
+var xml2js = require('xml2js');
 var FormData = require('form-data');
 var emplacements = require('noms_globaux');
 var parametres = require(emplacements.parametres);
@@ -48,11 +49,10 @@ function Service_certiserveur(un_embaucheur, un_doc, une_signature){
   this.doc = un_doc;
   this.doc.hashage();
   this.signature = une_signature;
-  this.xml_a_interpreter = fs.readFileSync(emplacements.employeur_pdfSign);
 }
 
 Service_certiserveur.prototype = new events.EventEmitter();
-
+Service_certiserveur.prototype.xml_a_interpreter = fs.readFileSync(emplacements.employeur_pdfSign, 'utf8');
 
 
 Service_certiserveur.prototype.ecrire_requete_soap = function(){
@@ -61,11 +61,11 @@ Service_certiserveur.prototype.ecrire_requete_soap = function(){
 }
 
 
-Service_certiserveur.prototype.envoyer_demande_soap = function(quelle_requete){
-	var requete_soap = this.ecrire_requete_soap(quelle_requete);
+Service_certiserveur.prototype.envoyer_demande_soap = function(){
+	var requete_soap = this.ecrire_requete_soap();
 	var options_http = {
-		hostname: 'certisms.certeurope.fr',
-		path : '/CertiSMS.php',
+		hostname: 'signature.certeurope.fr',
+		path : '/ws/services/WSFacade',
 		port: 80,
 		method: 'POST',
 		headers: {
@@ -78,6 +78,7 @@ Service_certiserveur.prototype.envoyer_demande_soap = function(quelle_requete){
 	var req = http.request(options_http, this.masque_recevoir_la_reponse(_this));
 	req.write(requete_soap);
 	req.end();
+  req.on('connect', function(){console.log('ici-----')})
 	this.emit('envoye')
 }
 
@@ -95,6 +96,7 @@ Service_certiserveur.prototype.masque_recevoir_la_reponse = function(_this){
 
 Service_certiserveur.prototype.gestion_des_reponses = function(reponse){
 	console.log(reponse);
+  var xml_reponse = xml2js.parseString(reponse, { explicitArray : false }, function(err, result){console.log(result)});
 	var corps_rep = reponse.substr(reponse.indexOf("SOAP-ENV:Body"));
 	var quelle_requete = corps_rep.substring((corps_rep.indexOf("<ns1")+5), corps_rep.indexOf("Response"));
 	var quelle_erreur = corps_rep.substring((corps_rep.indexOf("<error>")+7), corps_rep.indexOf("</error>"));
@@ -110,12 +112,15 @@ Service_certiserveur.prototype.gestion_des_reponses = function(reponse){
 }
 
 if (require.main === module){
-var p1 = new signataire('nom', 'prenom', '0177777777');
-var a = new service_certisms('salut', p1);
+var e1 = new Embaucheur('test');
+var s1 = new Signature('1','0', '10','10', '190','50');
+var f1 = fs.readFileSync(__dirname+'/FNTC_guide+signature+elec_.pdf');
+var d1 = new Doc(f1);
+var a = new Service_certiserveur(e1,d1,s1);
 a.envoyer_demande_soap(emplacements.addAccess);
 }
 
 module.exports.Embaucheur = Embaucheur;
 module.exports.Signature = Signature;
 module.exports.Doc = Doc;
-module.exports.Service_certisms = Service_certisms;
+module.exports.Service_certiserveur = Service_certiserveur;

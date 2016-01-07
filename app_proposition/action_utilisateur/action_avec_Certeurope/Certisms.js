@@ -22,12 +22,14 @@ function Service_certisms(textOk,  un_signataire, code_sms){
 	this.textOk = textOk; //?? texte affichee lors de l'envoi du sms ??
 	this.signataire = un_signataire; //donnees du signataire
 	this.code_sms = code_sms || "rien";
-	this.xml_a_interpreter = {};
-	this.xml_a_interpreter.addAccess = fs.readFileSync(emplacements.addAccess, 'utf8');
-	this.xml_a_interpreter.checkAccess = fs.readFileSync(emplacements.checkAccess, 'utf8');
+
 	}
 
 Service_certisms.prototype = new events.EventEmitter()
+
+Service_certisms.prototype.xml_a_interpreter = {};
+Service_certisms.prototype.xml_a_interpreter.addAccess = fs.readFileSync(emplacements.addAccess, 'utf8');
+Service_certisms.prototype.xml_a_interpreter.checkAccess = fs.readFileSync(emplacements.checkAccess, 'utf8');
 
 Service_certisms.prototype.ecrire_requete_soap = function(quelle_requete){
 	var xml = ejs.render(this.xml_a_interpreter[quelle_requete], {'param': this});

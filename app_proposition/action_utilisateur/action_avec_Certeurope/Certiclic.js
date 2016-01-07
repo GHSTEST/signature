@@ -5,7 +5,7 @@ var crypt = require('crypto');
 var mongodb = require('mongoose');
 var emplacements = require('noms_globaux');
 var FormData = require('form-data');
-var events = require('events')
+var events = require('events');
 var parametres = require(emplacements.parametres)
 
 function Signataire(nom, prenom, mail){
@@ -53,10 +53,10 @@ function Service_certiclic(type, id_requete, un_signataire,  une_signature, un_d
 	this.signature = une_signature;// parametres de signature
 	this.doc = un_doc; //parametres du doc a signer...
 	this.doc.hashage();//...hashage du doc
-	this.xml_a_interpreter = fs.readFileSync(__dirname + '/requete_xml.ejs', 'utf8'); //patron de la requete xml
 }
 
 Service_certiclic.prototype = new  events.EventEmitter();
+Service_certiclic.prototype.xml_a_interpreter = fs.readFileSync(__dirname + '/requete_xml.ejs', 'utf8'); //patron de la requete xml
 
 Service_certiclic.prototype.ecrire_xml = function(){
 	var xml = ejs.render(this.xml_a_interpreter, {'param': this});
