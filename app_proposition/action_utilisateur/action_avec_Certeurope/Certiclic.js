@@ -56,6 +56,9 @@ function Service_certiclic(type, id_requete, un_signataire,  une_signature, un_d
 }
 
 Service_certiclic.prototype = new  events.EventEmitter();
+Service_certiclic.prototype.constructor = Service_certiclic;
+
+
 Service_certiclic.prototype.xml_a_interpreter = fs.readFileSync(__dirname + '/requete_xml.ejs', 'utf8'); //patron de la requete xml
 
 Service_certiclic.prototype.ecrire_xml = function(){
@@ -74,23 +77,28 @@ Service_certiclic.prototype.envoyer_la_demande = function(){
 
 Service_certiclic.prototype.masque_recevoir_la_reponse = function(_this){
 	var recevoir_la_reponse = function(err, res){
-		console.log('STATUS: ' + res.statusCode);
-		console.log('HEADERS: ' + JSON.stringify(res.headers));
-		if (res.headers['content-type'] == 'application/xml'){
-			var fichier_signe = fs.createWriteStream("test_erreur.txt");
-			res.pipe(fichier_signe);
-			this.emit('pbme')
+		if (err){
+					console.log('une erreur est survenue')
+		}
+		else {
+					console.log('STATUS: ' + res.statusCode);
+					console.log('HEADERS: ' + JSON.stringify(res.headers));
+					if (res.headers['content-type'] == 'application/xml'){
+						var fichier_signe = fs.createWriteStream("test_erreur.txt");
+						res.pipe(fichier_signe);
+						this.emit('pbme')
+						}
+					else { if (res.headers['content-type'] == 'application/octet-stream'){
+						var fichier_signe = fs.createWriteStream("test.pdf");
+						res.pipe(fichier_signe);
+						this.emit('succes');
+							}
+						}
+					res.on('end', function() {
+						console.log("traitement termine");
+						this.emit('traitement_termine');
+						})
 			}
-		else { if (res.headers['content-type'] == 'application/octet-stream'){
-			var fichier_signe = fs.createWriteStream("test.pdf");
-			res.pipe(fichier_signe);
-			this.emit('succes');
-				}
-			}
-		res.on('end', function() {
-			console.log("traitement termine");
-			this.emit('traitement_termine');
-			})
 	}
 	return recevoir_la_reponse
 }

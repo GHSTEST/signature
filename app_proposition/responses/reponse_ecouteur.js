@@ -8,10 +8,15 @@ function Reponse_ecouteur(res){
 Reponse_ecouteur.prototype = new events.EventEmitter();
 
 Reponse_ecouteur.prototype.ajouter = function(obj){
-  switch(obj.constructor){
-    case Employeur :
-      obj.on('succes', function(param){ 
+  switch(obj.code_reponse){
+    case 
+    case 'Employeur' :
+      obj.on('succes', function(param){
                 } )
       break;
   }
+    case 'sms' :
+      obj.on('succes', function(param){
+
+      }
 }

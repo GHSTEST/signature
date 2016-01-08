@@ -79,6 +79,7 @@ Service_certiserveur.prototype.envoyer_demande_soap = function(){
 	req.write(requete_soap);
 	req.end();
   req.on('connect', function(){console.log('ici-----')})
+  req.on('error', function(err){console.log('une erreur est survenue')})
 	this.emit('envoye')
 }
 

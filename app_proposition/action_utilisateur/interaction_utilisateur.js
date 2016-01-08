@@ -43,5 +43,12 @@ Campagne.prototype.faire_signer = function(une_signature){
  if (require.main === module){
 var c1 = new Campagne();
 var clic = new certisms.Service_certisms();
+console.log((c1 instanceof events.EventEmitter))
 console.log((c1.constructor ===  Campagne))
+console.log(Object.prototype.toString.call(c1))
+
+console.log((clic instanceof events.EventEmitter))
+console.log((clic instanceof certisms.Service_certisms))
+console.log((clic.constructor))
+console.log(Object.prototype.toString.call(clic))
 }

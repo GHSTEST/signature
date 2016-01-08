@@ -26,6 +26,8 @@ function Service_certisms(textOk,  un_signataire, code_sms){
 	}
 
 Service_certisms.prototype = new events.EventEmitter()
+//pour regler le pbme de test du type, l'ecouteur d'erreur differencie les objets grace a leur propriete code erreur
+Service_certisms.prototype.constructor = Service_certisms;
 
 Service_certisms.prototype.xml_a_interpreter = {};
 Service_certisms.prototype.xml_a_interpreter.addAccess = fs.readFileSync(emplacements.addAccess, 'utf8');
@@ -51,6 +53,9 @@ Service_certisms.prototype.envoyer_demande_soap = function(quelle_requete){
 		};
 	var _this = this;
 	var req = http.request(options_http, this.masque_recevoir_la_reponse(_this));
+	req.on('error', function(err){
+		console.log("erreur d'envoi")
+	})
 	req.write(requete_soap);
 	req.end();
 	this.emit('envoye')
